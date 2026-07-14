@@ -1,0 +1,8 @@
+# depslib dependency file v1.0
+1748046514 source:/home/canico/Documentos/Pong/Pong/main.c
+	<SDL2/SDL.h>
+	<stdbool.h>
+	<stdlib.h>
+	<time.h>
+	<SDL2/SDL2_gfxPrimitives.h>
+

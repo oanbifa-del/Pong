@@ -30,7 +30,6 @@ O objetivo deste projeto é aplicar conceitos fundamentais de desenvolvimento de
 
 ## Próximas funcionalidades
 
-* Placar da partida
 * Efeitos sonoros
 * Tela de Game Over
 * Melhorias visuais

@@ -91,7 +91,7 @@ void showIntro(SDL_Renderer *renderer)
         SDL_RenderPresent(renderer);
 
 
-    SDL_Delay(5000);
+    SDL_Delay(2000);
 
 
     // Fade out

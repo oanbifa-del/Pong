@@ -1,6 +1,6 @@
 # 🏓 Pong 2026
 
-Um remake do clássico **Pong**, desenvolvido em **C** utilizando a biblioteca **SDL2** como projeto de estudo da disciplina de Programação da graduação em Ciência da Computação.
+Remake do clássico **Pong**, desenvolvido em **C** utilizando a biblioteca **SDL2** 
 
 O objetivo deste projeto é aplicar conceitos fundamentais de desenvolvimento de jogos, programação estruturada, manipulação de eventos, renderização gráfica e organização de código em C.
 
@@ -30,7 +30,6 @@ O objetivo deste projeto é aplicar conceitos fundamentais de desenvolvimento de
 
 ## Próximas funcionalidades
 
-* Placar da partida
 * Efeitos sonoros
 * Tela de Game Over
 * Melhorias visuais
@@ -72,7 +71,7 @@ sudo apt install libsdl2-dev libsdl2-ttf-dev libsdl2-gfx-dev
 Compile o projeto:
 
 ```bash
-gcc main.c intro.c -o pong \
+gcc main.c intro.c menu.c -o pong \
 $(sdl2-config --cflags --libs) \
 -lSDL2_ttf \
 -lSDL2_gfx

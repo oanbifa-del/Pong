@@ -1,6 +1,6 @@
 # 🏓 Pong 2026
 
-Um remake do clássico **Pong**, desenvolvido em **C** utilizando a biblioteca **SDL2** como projeto de estudo da disciplina de Programação da graduação em Ciência da Computação.
+Remake do clássico **Pong**, desenvolvido em **C** utilizando a biblioteca **SDL2** 
 
 O objetivo deste projeto é aplicar conceitos fundamentais de desenvolvimento de jogos, programação estruturada, manipulação de eventos, renderização gráfica e organização de código em C.
 

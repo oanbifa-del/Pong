@@ -72,7 +72,7 @@ sudo apt install libsdl2-dev libsdl2-ttf-dev libsdl2-gfx-dev
 Compile o projeto:
 
 ```bash
-gcc main.c intro.c -o pong \
+gcc main.c intro.c menu.c -o pong \
 $(sdl2-config --cflags --libs) \
 -lSDL2_ttf \
 -lSDL2_gfx

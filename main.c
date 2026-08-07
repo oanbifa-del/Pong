@@ -8,10 +8,13 @@
 #include "menu.h"
 
 // Configurações da janela
-#define SCREEN_WIDTH 1840
+#define SCREEN_WIDTH 1920
 #define SCREEN_HEIGHT 1000
+#define PLAYFIELD_MARGIN_X 80
+#define PLAYFIELD_MARGIN_Y 30
+
 // velocidade da raquete
-#define PADDLE_SPEED 10
+#define PADDLE_SPEED 12
 
 // Velocidade da bola
 int ballVelX, ballVelY;
@@ -49,9 +52,9 @@ void updateGame(SDL_Rect *ball,
     ball->x += ballVelX;
     ball->y += ballVelY;
 
-    // Rebote nas bordas superior e inferior
-    if (ball->y <= 0 ||
-        ball->y + ball->h >= SCREEN_HEIGHT)
+    // Rebote nas linhas verde superior e inferior da arena
+    if (ball->y <= PLAYFIELD_MARGIN_Y ||
+        ball->y + ball->h >= SCREEN_HEIGHT - PLAYFIELD_MARGIN_Y)
     {
         ballVelY = -ballVelY;
     }
@@ -68,9 +71,12 @@ void updateGame(SDL_Rect *ball,
         ballVelX = -ballVelX;
         ballVelY += paddle2Velocity / 2;
     }
+
 }
 // Processa eventos da SDL e o movimento das raquetes
 void processInput(bool *running,
+                   SDL_Window *window,
+                   bool *fullscreen,
                    SDL_Rect *paddle1,
                    SDL_Rect *paddle2,
                    int *paddle1Velocity,
@@ -80,8 +86,21 @@ void processInput(bool *running,
 
     while (SDL_PollEvent(&event))
     {
+        // Fecha o jogo
         if (event.type == SDL_QUIT)
             *running = false;
+
+        // Alterna entre janela e tela cheia
+        if (event.type == SDL_KEYDOWN &&
+            event.key.keysym.sym == SDLK_F11)
+        {
+            *fullscreen = !(*fullscreen);
+
+            SDL_SetWindowFullscreen(
+                window,
+                *fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0
+            );
+        }
     }
 
     // Assume que as raquetes estão paradas neste frame
@@ -90,27 +109,30 @@ void processInput(bool *running,
     const Uint8 *keystate = SDL_GetKeyboardState(NULL);
 
     // Jogador 1 (W/S)
-    if (keystate[SDL_SCANCODE_W] && paddle1->y > 0)
+    if (keystate[SDL_SCANCODE_W] &&
+        paddle1->y > PLAYFIELD_MARGIN_Y)
     {
         paddle1->y -= PADDLE_SPEED;
         *paddle1Velocity = -PADDLE_SPEED;
     }
 
     if (keystate[SDL_SCANCODE_S] &&
-        paddle1->y < SCREEN_HEIGHT - paddle1->h)
+        paddle1->y < SCREEN_HEIGHT - PLAYFIELD_MARGIN_Y - paddle1->h)
     {
         paddle1->y += PADDLE_SPEED;
         *paddle1Velocity = PADDLE_SPEED;
     }
 
     // Jogador 2 (Setas)
-    if (keystate[SDL_SCANCODE_UP] && paddle2->y > 0)
+    if (keystate[SDL_SCANCODE_UP] &&
+        paddle2->y > PLAYFIELD_MARGIN_Y)
     {
         paddle2->y -= PADDLE_SPEED;
         *paddle2Velocity = -PADDLE_SPEED;
     }
+
     if (keystate[SDL_SCANCODE_DOWN] &&
-        paddle2->y < SCREEN_HEIGHT - paddle2->h)
+        paddle2->y < SCREEN_HEIGHT - PLAYFIELD_MARGIN_Y - paddle2->h)
     {
         paddle2->y += PADDLE_SPEED;
         *paddle2Velocity = PADDLE_SPEED;
@@ -120,13 +142,13 @@ void processInput(bool *running,
 // Atualiza o Placar
 void updateScore(SDL_Rect *ball, int *score1, int *score2)
 {
-    if (ball->x < 0)
+    if (ball->x < PLAYFIELD_MARGIN_X)
     {
         (*score2)++;
         resetBall(ball);
     }
 
-    if (ball->x > SCREEN_WIDTH)
+    if (ball->x + ball->w > SCREEN_WIDTH - PLAYFIELD_MARGIN_X)
     {
         (*score1)++;
         resetBall(ball);
@@ -215,12 +237,42 @@ void renderGame(SDL_Renderer *renderer,
         255, 255, 255, 255);
 
     // Bordas laterais
-    SDL_Rect bordaEsquerda = {0, 0, 10, SCREEN_HEIGHT};
-    SDL_Rect bordaDireita = {SCREEN_WIDTH - 10, 0, 10, SCREEN_HEIGHT};
+    SDL_Rect bordaEsquerda = {
+        PLAYFIELD_MARGIN_X,
+        PLAYFIELD_MARGIN_Y,
+        10,
+        SCREEN_HEIGHT - 2 * PLAYFIELD_MARGIN_Y
+    };
+
+    SDL_Rect bordaDireita = {
+        SCREEN_WIDTH - PLAYFIELD_MARGIN_X - 10,
+        PLAYFIELD_MARGIN_Y,
+        10,
+        SCREEN_HEIGHT - 2 * PLAYFIELD_MARGIN_Y
+    };
     SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
     SDL_RenderFillRect(renderer, &bordaEsquerda);
     SDL_RenderFillRect(renderer, &bordaDireita);
     renderScore(renderer, score1, score2);
+    SDL_SetRenderDrawColor(renderer, 57, 255, 20, 255); // Verde neon
+    // Desenha as margens superior e Inferior
+    SDL_RenderDrawLine(
+        renderer,
+        PLAYFIELD_MARGIN_X,
+        PLAYFIELD_MARGIN_Y,
+        SCREEN_WIDTH - PLAYFIELD_MARGIN_X,
+        PLAYFIELD_MARGIN_Y
+    );
+
+    SDL_RenderDrawLine(
+        renderer,
+        PLAYFIELD_MARGIN_X,
+        SCREEN_HEIGHT - PLAYFIELD_MARGIN_Y,
+        SCREEN_WIDTH - PLAYFIELD_MARGIN_X,
+        SCREEN_HEIGHT - PLAYFIELD_MARGIN_Y
+    );
+
+
     // Atualiza a tela
     SDL_RenderPresent(renderer);
 }
@@ -232,6 +284,7 @@ void renderGame(SDL_Renderer *renderer,
 int main()
 {
     srand(time(NULL));
+    bool fullscreen = false;
 
     // Inicializa a SDL
     if (SDL_Init(SDL_INIT_VIDEO) != 0)
@@ -267,8 +320,19 @@ int main()
     showMenu(renderer);
 
     // Objetos do jogo
-    SDL_Rect paddle1 = {50, SCREEN_HEIGHT / 2 - 50, 10, 100};
-    SDL_Rect paddle2 = {SCREEN_WIDTH - 60, SCREEN_HEIGHT / 2 - 50, 10, 100};
+    SDL_Rect paddle1 = {
+        PLAYFIELD_MARGIN_X + 40,
+        SCREEN_HEIGHT / 2 - 50,
+        10,
+        100
+    };
+
+    SDL_Rect paddle2 = {
+        SCREEN_WIDTH - PLAYFIELD_MARGIN_X - 50,
+        SCREEN_HEIGHT / 2 - 50,
+        10,
+        100
+    };
 
     SDL_Rect ball;
 
@@ -286,7 +350,7 @@ int main()
 
     while (running)
     {
-        processInput(&running, &paddle1, &paddle2, &paddle1Velocity, &paddle2Velocity);
+        processInput(&running, window, &fullscreen, &paddle1, &paddle2, &paddle1Velocity, &paddle2Velocity);
         updateGame(&ball, &paddle1, &paddle2, paddle1Velocity, paddle2Velocity);
         updateScore(&ball, &score1, &score2);
         renderGame(renderer, &ball, &paddle1, &paddle2, score1, score2);

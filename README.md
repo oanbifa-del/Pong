@@ -1,6 +1,6 @@
 # 🏓 Pong 2026
 
-Remake do clássico **Pong**, desenvolvido em **C** utilizando a biblioteca **SDL2** 
+Um remake do clássico **Pong**, desenvolvido em **C** utilizando a biblioteca **SDL2** como projeto de estudo da disciplina de Programação da graduação em Ciência da Computação.
 
 O objetivo deste projeto é aplicar conceitos fundamentais de desenvolvimento de jogos, programação estruturada, manipulação de eventos, renderização gráfica e organização de código em C.
 
@@ -19,6 +19,10 @@ O objetivo deste projeto é aplicar conceitos fundamentais de desenvolvimento de
 ## Funcionalidades atuais
 
 * Introdução animada com o título **PONG 2026**
+- Tela inicial de preparação dos jogadores
+- Instruções de controle antes da partida
+- Sistema de placar
+- Física de colisão com influência do movimento das raquetes
 * Movimento das raquetes por dois jogadores
 * Colisão entre bola e raquetes
 * Rebote nas bordas superior e inferior
@@ -52,9 +56,16 @@ O objetivo deste projeto é aplicar conceitos fundamentais de desenvolvimento de
 pong/
 ├── assets/
 │   └── fonts/
-├── intro.c
+│       └── Orbitron-Bold.ttf
+│
+├── intro.c          # Animação de abertura do título PONG 2026
 ├── intro.h
-├── main.c
+│
+├── menu.c           # Tela de preparação e instruções dos jogadores
+├── menu.h
+│
+├── main.c           # Loop principal e lógica do jogo
+│
 └── README.md
 ```
 
@@ -71,10 +82,7 @@ sudo apt install libsdl2-dev libsdl2-ttf-dev libsdl2-gfx-dev
 Compile o projeto:
 
 ```bash
-gcc main.c intro.c menu.c -o pong \
-$(sdl2-config --cflags --libs) \
--lSDL2_ttf \
--lSDL2_gfx
+gcc main.c intro.c audio.c menu.c -o pong -lSDL2 -lSDL2_ttf -lSDL2_mixer -lSDL2_image -lSDL2_gfx
 ```
 
 Execute:

@@ -2,14 +2,15 @@
 
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 
-#define SCREEN_WIDTH 1840
+#define SCREEN_WIDTH 1920
 #define SCREEN_HEIGHT 1000
 
 void showIntro(SDL_Renderer *renderer)
 {
     TTF_Font *font =
-        TTF_OpenFont("assets/fonts/Orbitron-Bold.ttf", 110);
+        TTF_OpenFont("assets/fonts/Orbitron-Bold.ttf", 120);
 
     if (!font)
     {
@@ -31,28 +32,45 @@ void showIntro(SDL_Renderer *renderer)
     SDL_Texture *tex2026 =
         SDL_CreateTextureFromSurface(renderer,surf2026);
 
+    SDL_Texture *logo = IMG_LoadTexture(renderer, "assets/images/pong_logo.png");
+
+    if (!logo)
+    {
+        printf("Erro ao carregar logo: %s\n", IMG_GetError());
+        return;
+    }
+
+    int logoW, logoH;
+    SDL_QueryTexture(logo, NULL, NULL, &logoW, &logoH);
+
+    SDL_Rect logoRect = {
+        SCREEN_WIDTH / 2 - logoW / 2,
+        SCREEN_HEIGHT / 2 - logoH / 2 - 50,
+        logoW,
+        logoH
+    };
+
     SDL_Rect pongRect={
         -surfPong->w,
-        SCREEN_HEIGHT/2-120,
+        SCREEN_HEIGHT/2-200,
         surfPong->w,
         surfPong->h
     };
 
     SDL_Rect anoRect={
         SCREEN_WIDTH,
-        SCREEN_HEIGHT/2,
+        SCREEN_HEIGHT/2-100,
         surf2026->w,
         surf2026->h
     };
 
     int destinoPong =
-        SCREEN_WIDTH/2 - surfPong->w/2 - 10;
+        SCREEN_WIDTH/2 - surfPong->w/2 - 2;
 
     int destinoAno =
-        SCREEN_WIDTH/2 - surf2026->w/2 + 9;
+        SCREEN_WIDTH/2 - surf2026->w/2 + 16;
 
     // Entrada
-
     while(pongRect.x < destinoPong ||
           anoRect.x > destinoAno)
     {
@@ -90,33 +108,30 @@ void showIntro(SDL_Renderer *renderer)
 
         SDL_RenderPresent(renderer);
 
+    SDL_Delay(1500);
 
-    SDL_Delay(2000);
-
-
-    // Fade out
-    for(int alpha=255; alpha>=0; alpha-=5)
+    // Zoom do logo
+    for (int escala = 100; escala <= 250; escala += 5)
     {
-        SDL_Event e;
+        SDL_Rect zoom;
 
-        while(SDL_PollEvent(&e))
-            if(e.type==SDL_QUIT)
-                return;
+        zoom.w = logoRect.w * escala / 100;
+        zoom.h = logoRect.h * escala / 100;
 
-        SDL_SetTextureAlphaMod(texPong,alpha);
-        SDL_SetTextureAlphaMod(tex2026,alpha);
+        zoom.x = SCREEN_WIDTH / 2 - zoom.w / 2;
+        zoom.y = SCREEN_HEIGHT / 2 - zoom.h / 2 - 50;
 
         SDL_SetRenderDrawColor(renderer,0,0,0,255);
         SDL_RenderClear(renderer);
 
-        SDL_RenderCopy(renderer,texPong,NULL,&pongRect);
-        SDL_RenderCopy(renderer,tex2026,NULL,&anoRect);
+        SDL_RenderCopy(renderer, logo, NULL, &zoom);
 
         SDL_RenderPresent(renderer);
 
-        SDL_Delay(16);
+        SDL_Delay(20);
     }
 
+    SDL_DestroyTexture(logo);
     SDL_DestroyTexture(texPong);
     SDL_DestroyTexture(tex2026);
 

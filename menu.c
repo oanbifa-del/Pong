@@ -4,7 +4,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-#define SCREEN_WIDTH 1840
+#define SCREEN_WIDTH 1920
 #define SCREEN_HEIGHT 1000
 
 
@@ -44,21 +44,25 @@ void drawText(SDL_Renderer *renderer,
 }
 
 
-// Tela de preparação antes do jogo
+// Tela de preparação/menu antes do jogo
 void showMenu(SDL_Renderer *renderer)
 {
     TTF_Font *fontTitulo =
         TTF_OpenFont(
             "assets/fonts/Orbitron-Bold.ttf",
-            90
+            70
         );
 
     TTF_Font *fontTexto =
         TTF_OpenFont(
             "assets/fonts/Orbitron-Bold.ttf",
-            45
+            40
         );
 
+    TTF_Font *fontTextoPequeno = TTF_OpenFont(
+        "assets/fonts/Orbitron-Bold.ttf",
+        35
+    );
 
     if (!fontTitulo || !fontTexto)
     {
@@ -67,12 +71,9 @@ void showMenu(SDL_Renderer *renderer)
         return;
     }
 
-
     bool esperando = true;
 
-
     SDL_Event event;
-
 
     while (esperando)
     {
@@ -84,14 +85,12 @@ void showMenu(SDL_Renderer *renderer)
                 esperando = false;
             }
 
-
             if (event.type == SDL_KEYDOWN &&
                 event.key.keysym.sym == SDLK_RETURN)
             {
                 esperando = false;
             }
         }
-
 
         // Fundo preto
         SDL_SetRenderDrawColor(
@@ -104,8 +103,6 @@ void showMenu(SDL_Renderer *renderer)
 
         SDL_RenderClear(renderer);
 
-
-
         // Cores da identidade visual
         SDL_Color laranja =
             {255, 165, 0, 255};
@@ -116,19 +113,18 @@ void showMenu(SDL_Renderer *renderer)
         SDL_Color azul =
             {0, 180, 255, 255};
 
-
+        SDL_Color vermelho =
+            {255, 0, 10, 255};
 
         // Título
         drawText(
             renderer,
             fontTitulo,
-            "== PREPARE-SE ==",
-            SCREEN_WIDTH/2 - 450,
-            120,
+            "-= PREPARE-SE =-",
+            SCREEN_WIDTH/2 - 376,
+            80,
             laranja
         );
-
-
 
         // Jogador 1
         drawText(
@@ -136,89 +132,100 @@ void showMenu(SDL_Renderer *renderer)
             fontTexto,
             "JOGADOR 1",
             350,
-            350,
+            280,
             verde
         );
-
 
         drawText(
             renderer,
             fontTexto,
             "W  -  SUBIR",
             350,
-            450,
+            385,
             azul
         );
-
 
         drawText(
             renderer,
             fontTexto,
             "S  -  DESCER",
             350,
-            530,
+            470,
             azul
         );
-
-
 
         // Jogador 2
         drawText(
             renderer,
             fontTexto,
             "JOGADOR 2",
-            1100,
-            350,
+            1220,
+            280,
             verde
         );
-
 
         drawText(
             renderer,
             fontTexto,
             "UP    -  SUBIR",
-            1100,
-            450,
+            1220,
+            385,
             azul
         );
-
 
         drawText(
             renderer,
             fontTexto,
             "DOWN  -  DESCER",
-            1100,
-            530,
+            1220,
+            470,
             azul
         );
-
-
+        drawText(
+            renderer,
+            fontTexto,
+            "ESC - Sair",
+            350,
+            590,
+            laranja
+        );
+        drawText(
+            renderer,
+            fontTexto,
+            "F1 - Reset",
+            350,
+            660,
+            laranja
+        );
+        drawText(
+            renderer,
+            fontTexto,
+            "SPACE - Pausar",
+            350,
+            730,
+            laranja
+        );
 
         // Texto piscante do ENTER
         Uint32 tempo =
             SDL_GetTicks();
 
-
         if ((tempo / 500) % 2 == 0)
         {
             drawText(
                 renderer,
-                fontTexto,
+                fontTextoPequeno,
                 "PRESSIONE ENTER PARA COMECAR...",
-                SCREEN_WIDTH/2 - 500,
-                800,
-                laranja
+                SCREEN_WIDTH/2 - 384,
+                850,
+                vermelho
             );
         }
 
-
-
         SDL_RenderPresent(renderer);
-
 
         SDL_Delay(16);
     }
-
 
     TTF_CloseFont(fontTitulo);
     TTF_CloseFont(fontTexto);

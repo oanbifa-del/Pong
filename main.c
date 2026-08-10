@@ -4,8 +4,10 @@
 #include <stdlib.h>
 #include <time.h>
 #include <SDL2/SDL_ttf.h>
+#include "audio.h"
 #include "intro.h"
 #include "menu.h"
+#include <SDL2/SDL_image.h>
 
 // Configurações da janela
 #define SCREEN_WIDTH 1920
@@ -52,22 +54,25 @@ void updateGame(SDL_Rect *ball,
     ball->x += ballVelX;
     ball->y += ballVelY;
 
-    // Rebote nas linhas verde superior e inferior da arena
+    // Rebote/colisao nas linhas verde da arena
     if (ball->y <= PLAYFIELD_MARGIN_Y ||
         ball->y + ball->h >= SCREEN_HEIGHT - PLAYFIELD_MARGIN_Y)
     {
+        playWallSound();
         ballVelY = -ballVelY;
     }
 
     // Colisão com as raquetes
     if (SDL_HasIntersection(ball, paddle1))
     {
+        playPaddle1Sound();
         ballVelX = -ballVelX;
         ballVelY += paddle1Velocity / 2;
     }
 
     if (SDL_HasIntersection(ball, paddle2))
     {
+        playPaddle2Sound();
         ballVelX = -ballVelX;
         ballVelY += paddle2Velocity / 2;
     }
@@ -75,13 +80,17 @@ void updateGame(SDL_Rect *ball,
 }
 // Processa eventos da SDL e o movimento das raquetes
 void processInput(bool *running,
-                   SDL_Window *window,
-                   bool *fullscreen,
-                   SDL_Rect *paddle1,
-                   SDL_Rect *paddle2,
-                   int *paddle1Velocity,
-                   int *paddle2Velocity)
-{
+                    SDL_Window *window,
+                    SDL_Renderer *renderer,
+                    bool *fullscreen,
+                    SDL_Rect *paddle1,
+                    SDL_Rect *paddle2,
+                    SDL_Rect *ball,
+                    int *score1,
+                    int *score2,
+                    int *paddle1Velocity,
+                    int *paddle2Velocity, bool *paused)
+                    {
     SDL_Event event;
 
     while (SDL_PollEvent(&event))
@@ -89,6 +98,35 @@ void processInput(bool *running,
         // Fecha o jogo
         if (event.type == SDL_QUIT)
             *running = false;
+
+        // Tecla ESC encerra o jogo
+        if (event.type == SDL_KEYDOWN &&
+            event.key.keysym.sym == SDLK_ESCAPE)
+        {
+            *running = false;
+        }
+
+        // F1 volta para a tela de preparação
+        if (event.type == SDL_KEYDOWN &&
+            event.key.keysym.sym == SDLK_F1)
+        {
+            resetBall(ball);
+
+            *score1 = 0;
+            *score2 = 0;
+
+            Mix_HaltMusic(); // para a música do jogo
+
+            showMenu(renderer); // volta para tela de preparação
+            playPongMusic();    // reinicia a música ao voltar ao jogo
+        }
+
+        // Espaço pausa/despausa o jogo
+        if (event.type == SDL_KEYDOWN &&
+            event.key.keysym.sym == SDLK_SPACE)
+        {
+            *paused = !(*paused);
+        }
 
         // Alterna entre janela e tela cheia
         if (event.type == SDL_KEYDOWN &&
@@ -137,6 +175,7 @@ void processInput(bool *running,
         paddle2->y += PADDLE_SPEED;
         *paddle2Velocity = PADDLE_SPEED;
     }
+
 }
 
 // Atualiza o Placar
@@ -278,13 +317,13 @@ void renderGame(SDL_Renderer *renderer,
 }
 
 // =====================================================
-// Programa principal
+//                Programa principal
 // =====================================================
-
 int main()
 {
     srand(time(NULL));
     bool fullscreen = false;
+    bool paused = false;
 
     // Inicializa a SDL
     if (SDL_Init(SDL_INIT_VIDEO) != 0)
@@ -292,6 +331,15 @@ int main()
         printf("Erro ao inicializar SDL: %s\n", SDL_GetError());
         return 1;
     }
+    //Incializa imagem do logo
+    if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG))
+    {
+        printf("Erro ao inicializar SDL_image: %s\n", IMG_GetError());
+        return 1;
+    }
+
+    // Inicia o audio
+    initAudio();
     // Inicializa o TTF
     if (TTF_Init() == -1)
     {
@@ -303,7 +351,7 @@ int main()
     SDL_Window *window = SDL_CreateWindow(
         "Pong",
         SDL_WINDOWPOS_CENTERED,
-        SDL_WINDOWPOS_CENTERED,
+        0,
         SCREEN_WIDTH,
         SCREEN_HEIGHT,
         SDL_WINDOW_SHOWN);
@@ -314,7 +362,8 @@ int main()
         -1,
         SDL_RENDERER_ACCELERATED |
             SDL_RENDERER_PRESENTVSYNC);
-    // Mostra a Intro
+    // Toca o som e mostra a Intro
+    playIntroSound();
     showIntro(renderer);
     // Mostra o Menu
     showMenu(renderer);
@@ -344,15 +393,26 @@ int main()
 
     bool running = true;
 
+    playPongMusic();
+
     // =================================================
     // Loop principal
     // =================================================
 
     while (running)
     {
-        processInput(&running, window, &fullscreen, &paddle1, &paddle2, &paddle1Velocity, &paddle2Velocity);
-        updateGame(&ball, &paddle1, &paddle2, paddle1Velocity, paddle2Velocity);
-        updateScore(&ball, &score1, &score2);
+        processInput(&running, window, renderer, &fullscreen,
+                     &paddle1, &paddle2, &ball, &score1, &score2,
+                     &paddle1Velocity, &paddle2Velocity, &paused);
+
+        if (!paused)
+        {
+            updateGame(&ball, &paddle1, &paddle2,
+                       paddle1Velocity, paddle2Velocity);
+
+            updateScore(&ball, &score1, &score2);
+        }
+
         renderGame(renderer, &ball, &paddle1, &paddle2, score1, score2);
         SDL_Delay(1000 / 60);
     }
@@ -360,6 +420,8 @@ int main()
     // Liberação dos recursos
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
+    closeAudio();
+    IMG_Quit();
     SDL_Quit();
     TTF_Quit();
     return 0;

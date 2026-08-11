@@ -4,11 +4,13 @@ Um remake do clássico **Pong**, desenvolvido em **C** utilizando a biblioteca *
 
 O objetivo deste projeto é aplicar conceitos fundamentais de desenvolvimento de jogos, programação estruturada, manipulação de eventos, renderização gráfica e organização de código em C.
 
-> **🚧 Projeto em desenvolvimento**
+# Telas Principais
 
-## Demonstração
+![Demonstração do Jogo](assets/demo/demo.gif)
+<img src="assets/demo/intro.png" width="360">
+<img src="assets/demo/prepara.png" width="360">
+<img src="assets/demo/jogo.png" width="360">
 
-*Em breve*
 
 ## Funcionalidades atuais
 
@@ -31,7 +33,7 @@ O objetivo deste projeto é aplicar conceitos fundamentais de desenvolvimento de
 * SDL2_gfx
 
 ## Estrutura do projeto
-
+```bash
 pong/
 ├── assets/
 │   ├── fonts/
@@ -55,7 +57,7 @@ pong/
 ├── main.c               # Loop principal, controles e lógica do jogo
 │
 └── README.md            # Documentação do projeto
-
+```
 
 ## Compilação
 

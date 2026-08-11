@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>PONG 2026 - Demonstração</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #050505;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        header {
+            padding: 50px 20px 25px;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 4rem;
+            letter-spacing: 8px;
+            color: #ffa500;
+            text-shadow:
+                0 0 10px #ffa500,
+                0 0 25px #ff6600;
+        }
+
+        .subtitle {
+            margin-top: 10px;
+            font-size: 1.2rem;
+            color: #05a5ff;
+            letter-spacing: 4px;
+        }
+
+        .line {
+            width: 80%;
+            max-width: 1000px;
+            height: 2px;
+            margin: 30px auto;
+            background: #39ff14;
+            box-shadow: 0 0 10px #39ff14;
+        }
+
+        main {
+            width: 90%;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .video-container {
+            border: 3px solid #39ff14;
+            box-shadow:
+                0 0 10px #39ff14,
+                0 0 30px rgba(57, 255, 20, 0.3);
+            background: #000;
+        }
+
+        video {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+
+        .description {
+            margin: 30px auto;
+            max-width: 800px;
+            line-height: 1.6;
+            color: #cccccc;
+        }
+
+        .github-button {
+            display: inline-block;
+            margin: 20px 0 50px;
+            padding: 14px 30px;
+            color: #000;
+            background: #39ff14;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 4px;
+            transition: 0.2s;
+        }
+
+        .github-button:hover {
+            background: #ffa500;
+            box-shadow: 0 0 20px #ffa500;
+            transform: scale(1.05);
+        }
+
+        footer {
+            padding: 20px;
+            color: #666;
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>PONG</h1>
+        <div class="subtitle">2026</div>
+
+        <div class="line"></div>
+    </header>
+
+    <main>
+
+        <div class="video-container">
+            <video controls>
+                <source src="assets/demo/Pong2026.mp4" type="video/mp4">
+                Seu navegador não suporta reprodução de vídeo.
+            </video>
+        </div>
+
+        <p class="description">
+            Demonstração do projeto <strong>Pong 2026</strong>,
+            um remake do clássico Pong desenvolvido em C utilizando SDL2.
+        </p>
+
+        <a
+            class="github-button"
+            href="https://github.com/oanbifa-del/Pong"
+            target="_blank"
+            rel="noopener noreferrer">
+            VER PROJETO NO GITHUB
+        </a>
+
+    </main>
+
+    <footer>
+        PONG 2026 · Projeto desenvolvido em C + SDL2
+    </footer>
+
+</body>
+</html>

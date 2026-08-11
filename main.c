@@ -184,12 +184,14 @@ void updateScore(SDL_Rect *ball, int *score1, int *score2)
     if (ball->x < PLAYFIELD_MARGIN_X)
     {
         (*score2)++;
+        playScore2Sound();
         resetBall(ball);
     }
 
     if (ball->x + ball->w > SCREEN_WIDTH - PLAYFIELD_MARGIN_X)
     {
         (*score1)++;
+        playScore1Sound();
         resetBall(ball);
     }
 }

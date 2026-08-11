@@ -12,6 +12,8 @@ void playPaddle2Sound();
 void playWallSound();
 
 void playPongMusic();
+void playScore1Sound();
+void playScore2Sound();
 
 void closeAudio();
 

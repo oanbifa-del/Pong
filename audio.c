@@ -12,7 +12,8 @@ static Mix_Music *pongMusic = NULL;
 static Mix_Chunk *paddle1Sound = NULL; // Nota Dó - raquete 1
 static Mix_Chunk *paddle2Sound = NULL; // Nota Ré - raquete 2
 static Mix_Chunk *wallSound = NULL;    // Nota Mi - parede
-
+static Mix_Chunk *score1Sound = NULL;
+static Mix_Chunk *score2Sound = NULL;
 
 // Inicializa o sistema de áudio e carrega os arquivos
 void initAudio()
@@ -50,6 +51,13 @@ void initAudio()
         "assets/sounds/xilofonE.wav"
     );
 
+    score1Sound = Mix_LoadWAV(
+        "assets/sounds/scoreC.wav"
+    );
+
+    score2Sound = Mix_LoadWAV(
+        "assets/sounds/scoreDm.wav"
+    );
 
     // Verifica carregamento dos arquivos
     if (!introSound)
@@ -68,6 +76,12 @@ void initAudio()
                Mix_GetError());
 
     if (!wallSound)
+        printf("Erro ao carregar xilofonE.wav: %s\n",
+               Mix_GetError());
+    if (!score1Sound)
+        printf("Erro ao carregar xilofonE.wav: %s\n",
+               Mix_GetError());
+    if (!score2Sound)
         printf("Erro ao carregar xilofonE.wav: %s\n",
                Mix_GetError());
 }
@@ -120,6 +134,22 @@ void playWallSound()
     }
 }
 
+void playScore1Sound()
+{
+    if (score1Sound)
+    {
+        Mix_PlayChannel(-1, score1Sound, 0);
+    }
+}
+
+void playScore2Sound()
+{
+    if (score2Sound)
+    {
+        Mix_PlayChannel(-1, score2Sound, 0);
+    }
+}
+
 
 // Libera memória e encerra o áudio
 void closeAudio()
@@ -135,6 +165,12 @@ void closeAudio()
 
     if (wallSound)
         Mix_FreeChunk(wallSound);
+
+    if (score1Sound)
+        Mix_FreeChunk(score1Sound);
+
+    if (score2Sound)
+        Mix_FreeChunk(score2Sound);
 
     Mix_CloseAudio();
 }

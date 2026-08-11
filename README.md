@@ -5,41 +5,23 @@ Um remake do clássico **Pong**, desenvolvido em **C** utilizando a biblioteca *
 O objetivo deste projeto é aplicar conceitos fundamentais de desenvolvimento de jogos, programação estruturada, manipulação de eventos, renderização gráfica e organização de código em C.
 
 > **🚧 Projeto em desenvolvimento**
->
-> Novas funcionalidades estão sendo implementadas continuamente.
-
----
 
 ## Demonstração
 
-*Em breve será adicionado um vídeo demonstrando a gameplay e as principais funcionalidades do jogo.*
-
----
+*Em breve*
 
 ## Funcionalidades atuais
 
 * Introdução animada com o título **PONG 2026**
-- Tela inicial de preparação dos jogadores
-- Instruções de controle antes da partida
-- Sistema de placar
-- Física de colisão com influência do movimento das raquetes
+* Tela de preparação com instruções de controle
+* Sistema de placar
 * Movimento das raquetes por dois jogadores
 * Colisão entre bola e raquetes
+* Física de colisão com influência do movimento das raquetes
 * Rebote nas bordas superior e inferior
 * Reinício automático da bola após cada ponto
 * Renderização utilizando SDL2
-* Código organizado em funções para facilitar manutenção e evolução
-
----
-
-## Próximas funcionalidades
-
-* Efeitos sonoros
-* Tela de Game Over
-* Melhorias visuais
-* Refatoração em módulos independentes
-
----
+* Música e efeitos sonoros sincronizados com os eventos do jogo
 
 ## Tecnologias utilizadas
 
@@ -48,28 +30,32 @@ O objetivo deste projeto é aplicar conceitos fundamentais de desenvolvimento de
 * SDL2_ttf
 * SDL2_gfx
 
----
-
 ## Estrutura do projeto
 
-```text
 pong/
 ├── assets/
-│   └── fonts/
-│       └── Orbitron-Bold.ttf
+│   ├── fonts/
+│   │   
+│   ├── images/
+│   │   └── pong_logo.png          # Logo utilizado na introdução
+│   │
+│   └── sounds/
+│       ├── intro.wav              # Vinheta da introdução
+│       ├── pongMusic.mp3          # Música de fundo do jogo
+│      
+├── audio.c              # Sistema de carregamento e reprodução dos sons
+├── audio.h
 │
-├── intro.c          # Animação de abertura do título PONG 2026
+├── intro.c              # Animação de abertura do título PONG 2026
 ├── intro.h
 │
-├── menu.c           # Tela de preparação e instruções dos jogadores
+├── menu.c               # Tela de preparação e instruções dos jogadores
 ├── menu.h
 │
-├── main.c           # Loop principal e lógica do jogo
+├── main.c               # Loop principal, controles e lógica do jogo
 │
-└── README.md
-```
+└── README.md            # Documentação do projeto
 
----
 
 ## Compilação
 
@@ -90,9 +76,6 @@ Execute:
 ```bash
 ./pong
 ```
-
----
-
 ## Objetivos de aprendizagem
 
 Este projeto foi desenvolvido com foco no estudo de:
@@ -103,8 +86,6 @@ Este projeto foi desenvolvido com foco no estudo de:
 * Desenvolvimento de jogos com SDL2
 * Organização e refatoração de código
 * Uso de bibliotecas externas
-
----
 
 ## Autor
 
